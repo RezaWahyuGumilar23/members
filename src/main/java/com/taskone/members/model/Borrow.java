@@ -1,11 +1,10 @@
-package com.taskone.members;
+package com.taskone.members.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,27 +18,33 @@ public class Borrow {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "borrow_id")
+	@JsonProperty("borrow_id")
 	private Long borrowId;
 	
+	@JsonProperty("borrowing_date")
 	private String borrowingDate;
 	
+	@JsonProperty("return_date")
 	private String returnDate;
 	
-	private Integer returnCharge;
+	@JsonProperty("return_charge")
+	private Long returnCharge;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
+	@JsonProperty("member")
     private Member member;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "book_id")
+	@JsonProperty("book")
     private Book book;
 	
 	public Borrow() {
 		super();
 	}
 	
-	public Borrow(Member member, String borrowingDate, String returnDate, Integer returnCharge) {
+	public Borrow(Member member, String borrowingDate, String returnDate, Long returnCharge) {
 		this.member = member;
 		this.borrowingDate = borrowingDate;
 		this.returnDate = returnDate;
@@ -70,11 +75,11 @@ public class Borrow {
 		this.returnDate = returnDate;
 	}
 
-	public Integer getReturnCharge() {
+	public Long getReturnCharge() {
 		return returnCharge;
 	}
 
-	public void setReturnCharge(Integer returnCharge) {
+	public void setReturnCharge(Long returnCharge) {
 		this.returnCharge = returnCharge;
 	}
 

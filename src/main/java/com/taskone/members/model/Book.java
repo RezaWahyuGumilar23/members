@@ -1,4 +1,4 @@
-package com.taskone.members;
+package com.taskone.members.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,12 +21,16 @@ public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "book_id")
+	@JsonProperty("book_id")
 	private Long bookId;
 	
+	@JsonProperty("title")
 	private String title;
 	
+	@JsonProperty("author")
 	private String author;
 	
+	@JsonProperty("genre")
 	private String genre;
 	
 	@OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

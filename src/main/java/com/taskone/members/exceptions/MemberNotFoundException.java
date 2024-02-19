@@ -1,7 +1,7 @@
-package com.taskone.members;
+package com.taskone.members.exceptions;
 
 public class MemberNotFoundException extends RuntimeException {
-	MemberNotFoundException(Long id) {
+	public MemberNotFoundException(Long id) {
 		super("Could not found member with id : " + id);
 	}
 }
