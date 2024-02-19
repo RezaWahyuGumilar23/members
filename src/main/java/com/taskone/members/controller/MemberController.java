@@ -21,27 +21,27 @@ public class MemberController {
 	private MemberService memberService;
 	
 	@GetMapping("/members")
-	Collection<Member> all() {
+	public Collection<Member> all() {
 		return memberService.all();
 	}
 	
 	@PostMapping("/members/add")
-	Member addNewMember(@RequestBody Member newMember) {
+	public Member addNewMember(@RequestBody Member newMember) {
 		return memberService.create(newMember);
 	}
 	
 	@GetMapping("/members/{id}")
-	Member getMember(@PathVariable Long id) {
+	public Member getMember(@PathVariable Long id) {
 		return memberService.item(id);
 	}
 	
 	@DeleteMapping("/members/{id}")
-	void deleteMember(@PathVariable Long id) {
+	public void deleteMember(@PathVariable Long id) {
 		memberService.delete(id);
 	}
 	
 	@PutMapping("/members/attendance/{id}")
-	void checkInAndCheckOut(@PathVariable Long id, @RequestBody Member newMember) {
+	public void checkInAndCheckOut(@PathVariable Long id, @RequestBody Member newMember) {
 		memberService.update(id, newMember);
 	}
 	

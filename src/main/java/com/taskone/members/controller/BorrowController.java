@@ -17,12 +17,12 @@ public class BorrowController {
 	private BorrowService borrowService;
 	
 	@PostMapping("/members/borrow")
-	Borrow borrowBook(@RequestBody Borrow borrow) {
+	public Borrow borrowBook(@RequestBody Borrow borrow) {
 		return borrowService.create(borrow);
 	}
 	
 	@PutMapping("/members/borrow/return/{id}")
-	void returnBook(@PathVariable Long id) {
+	public void returnBook(@PathVariable Long id) {
 		borrowService.update(id, null);
 	}
 }
