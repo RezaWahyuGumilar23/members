@@ -1,9 +1,10 @@
 package com.taskone.members;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,65 +15,81 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MemberController {
-	private final MemberRepository repository;
-	private final AttendanceRepository attendanceRepository;
+	private final MemberRepository memberRepository;
+	private final BorrowRepository borrowRepository;
+	private final BookRepository bookRepository;
 	
-	MemberController(MemberRepository repository, AttendanceRepository attendanceRepository) {
-		this.repository = repository;
-		this.attendanceRepository = attendanceRepository;
+	@Value("${useDefault:charge}")
+	private String borrowCharge;
+	
+	@Value("${useDefault:defaultperiod}")
+	private String defaultPeriod;
+	
+	MemberController(MemberRepository repository, BorrowRepository attendanceRepository, BookRepository bookRepository) {
+		this.memberRepository = repository;
+		this.borrowRepository = attendanceRepository;
+		this.bookRepository = bookRepository;
 	}
 	
 	@GetMapping("/members")
 	List<Member> all() {
-		return repository.findAll();
+		return memberRepository.findAll();
 	}
 	
 	@PostMapping("/members/add")
 	Member addNewMember(@RequestBody Member newMember) {
-		return repository.save(newMember);
+		return memberRepository.save(newMember);
 	}
 	
 	@GetMapping("/members/{id}")
 	Member getMember(@PathVariable Long id) {
-		return repository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
+		return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
 	}
 	
 	@DeleteMapping("/members/{id}")
 	void deleteMember(@PathVariable Long id) {
-		repository.deleteById(id);
+		memberRepository.deleteById(id);
 	}
 	
 	@PutMapping("/members/attendance/{id}")
 	void checkInAndCheckOut(@PathVariable Long id) {
 		boolean loginStatus = getMember(id).isLoggedIn();
-		repository.findById(id).map(member -> {
+		memberRepository.findById(id).map(member -> {
 			member.setLoginStatus(!loginStatus);
-			recordcheckInAndCheckOutTime(
-					new SimpleDateFormat("MMMM dd, yyyy").format(Calendar.getInstance().getTime()), 
-					id, 
-					member.isLoggedIn()
-				);
-			return repository.save(member);
+			return memberRepository.save(member);
 		})
 		.orElseThrow(() -> new MemberNotFoundException(id));
 	}
 	
-	void recordcheckInAndCheckOutTime(String currentDate, Long memberId, boolean isLoggedIn) {
-		String loginDate = new SimpleDateFormat("MMMM dd, yyyy").format(Calendar.getInstance().getTime());
-		String loginTime = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
+	@PostMapping("/members/borrow")
+	Borrow borrowBook(@RequestBody Borrow borrow) {
+		Borrow recordBorrow = new Borrow();
+		memberRepository.findById(borrow.getMember().getMemberId()).ifPresent(
+				member -> {
+					recordBorrow.setMember(member);
+				});
+		bookRepository.findById(borrow.getBook().getBookId()).ifPresent(
+				book->{
+					recordBorrow.setBook(book);
+				});
 		
-		attendanceRepository.findByDateTime(currentDate).ifPresentOrElse(attendance -> {
-			attendanceRepository.findById(attendance.getAttendanceId())
-			.map(attendanceById -> {
-				attendanceById.setDateTime(loginDate);
-				if(isLoggedIn) attendanceById.setLoginTime(loginTime);
-				else attendanceById.setLogoutTime(loginTime);
-				
-				return attendanceRepository.save(attendanceById);
-			});
-		}, () -> {
-			attendanceRepository.save(new Attendance(getMember(memberId), loginDate, loginTime, ""));
-		});
+		recordBorrow.setBorrowingDate(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
+		return borrowRepository.save(recordBorrow);
+	}
+	
+	@PutMapping("/members/borrow/return/{id}")
+	void returnBook(@PathVariable Long id) {
+		borrowRepository.findById(id).map(borrow -> {
+			LocalDate borrowDate = LocalDate.parse(borrow.getBorrowingDate(), DateTimeFormatter.ofPattern("MMMM dd, yyyy"));
+			LocalDate returnDate = LocalDate.now();
+			Integer delay = borrowDate.compareTo(returnDate);
+			
+			borrow.setReturnDate(LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM dd, yyyy")));
+			if (delay > Integer.parseInt(defaultPeriod)) {
+				borrow.setReturnCharge((Integer.parseInt(defaultPeriod) - delay) * Integer.parseInt(borrowCharge));
+			}
+			return borrowRepository.save(borrow);
+		}).orElseThrow(() -> new MemberNotFoundException(id));
 	}
 	
 }

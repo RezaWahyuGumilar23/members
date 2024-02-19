@@ -1,5 +1,8 @@
 package com.taskone.members;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -9,7 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,7 +21,7 @@ public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "member_id")
-	private Integer memberId;
+	private Long memberId;
 	
 	private String name;
 	
@@ -26,15 +29,15 @@ public class Member {
 	
 	private boolean loginStatus;
 	
-	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Attendance attendance;
+    private Set<Borrow> borrow = new HashSet<>();
 	
 	public Member() {
 		super();
 	}
 	
-	public Member(Integer memberId, String name, String mobileNo, boolean loginStatus) {
+	public Member(Long memberId, String name, String mobileNo, boolean loginStatus) {
 		this.memberId = memberId;
 		this.name = name;
 		this.mobileNo = mobileNo;
@@ -45,7 +48,7 @@ public class Member {
 		return mobileNo;
 	}
 
-	public Integer getMemberId() {
+	public Long getMemberId() {
 		return memberId;
 	}
 
@@ -53,7 +56,7 @@ public class Member {
 		return name;
 	}
 
-	public void setMemberId(Integer memberId) {
+	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
 
@@ -73,14 +76,12 @@ public class Member {
 		return loginStatus;
 	}
 
-	public Attendance getAttendance() {
-		return attendance;
+	public Set<Borrow> getBorrow() {
+		return borrow;
 	}
 
-	public void setAttendance(Attendance attendance) {
-		this.attendance = attendance;
+	public void setBorrow(Set<Borrow> borrow) {
+		this.borrow = borrow;
 	}
-	
-	
 	
 }
