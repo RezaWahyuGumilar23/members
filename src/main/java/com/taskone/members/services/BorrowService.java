@@ -3,7 +3,7 @@ package com.taskone.members.services;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class BorrowService implements BaseService<Borrow> {
 
 	@Override
 	@Transactional
-	public Collection<Borrow> all() {
+	public List<Borrow> all() {
 		return borrowRepository.findAll();
 	}
 

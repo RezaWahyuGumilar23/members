@@ -1,10 +1,8 @@
 package com.taskone.members.services;
 
-import java.util.Collection;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.taskone.members.base.BaseService;
 import com.taskone.members.exceptions.MemberNotFoundException;
 import com.taskone.members.model.Book;
@@ -20,7 +18,7 @@ public class BookService implements BaseService<Book> {
 
 	@Override
 	@Transactional
-	public Collection<Book> all() {
+	public List<Book> all() {
 		return bookRepository.findAll();
 	}
 

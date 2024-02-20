@@ -1,91 +1,29 @@
 package com.taskone.members.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "members")
+@Data
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "member_id")
-	@JsonProperty("member_id")
 	private Long memberId;
-	
-	@JsonProperty("name")
 	private String name;
-	
-	@JsonProperty("mobile_no")
 	private String mobileNo;
-	
-	@JsonProperty("login_status")
-	private boolean loginStatus;
-	
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Boolean loginStatus;
+	@OneToMany(mappedBy = "member")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Set<Borrow> borrow = new HashSet<>();
-	
-	public Member() {
-		super();
-	}
-	
-	public Member(Long memberId, String name, String mobileNo, boolean loginStatus) {
-		this.memberId = memberId;
-		this.name = name;
-		this.mobileNo = mobileNo;
-		this.loginStatus = loginStatus;
-	}
-
-	public String getMobileNo() {
-		return mobileNo;
-	}
-
-	public Long getMemberId() {
-		return memberId;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setMemberId(Long memberId) {
-		this.memberId = memberId;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setMobileNo(String mobileNo) {
-		this.mobileNo = mobileNo;
-	}
-
-	public void setLoginStatus(boolean loginStatus) {
-		this.loginStatus = loginStatus;
-	}
-
-	public boolean isLoggedIn() {
-		return loginStatus;
-	}
-
-	public Set<Borrow> getBorrow() {
-		return borrow;
-	}
-
-	public void setBorrow(Set<Borrow> borrow) {
-		this.borrow = borrow;
-	}
+    private List<Borrow> borrow;
 	
 }

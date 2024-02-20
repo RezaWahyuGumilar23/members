@@ -1,9 +1,9 @@
 package com.taskone.members.base;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface BaseService<T> {
-	public abstract Collection<T> all();
+	public abstract List<T> all();
 	public abstract T item(Long id);
 	public abstract T create(T data);
 	public abstract void update(Long id, T data);
