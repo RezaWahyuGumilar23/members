@@ -21,7 +21,6 @@ public class Member {
 	private Long memberId;
 	private String name;
 	private String mobileNo;
-	private Boolean loginStatus;
 	@OneToMany(mappedBy = "member")
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Borrow> borrow;

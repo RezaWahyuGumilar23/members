@@ -14,7 +14,4 @@ public class MemberDto {
 	
 	@JsonProperty("mobile_no")
 	private String mobileNo;
-	
-	@JsonProperty("login_status")
-	private Boolean loginStatus;
 }

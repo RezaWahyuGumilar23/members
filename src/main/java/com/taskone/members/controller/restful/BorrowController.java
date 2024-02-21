@@ -1,4 +1,4 @@
-package com.taskone.members.controller;
+package com.taskone.members.controller.restful;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

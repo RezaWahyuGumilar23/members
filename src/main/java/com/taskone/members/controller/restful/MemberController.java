@@ -1,4 +1,4 @@
-package com.taskone.members.controller;
+package com.taskone.members.controller.restful;
 
 import java.util.List;
 import java.util.stream.Collectors;
