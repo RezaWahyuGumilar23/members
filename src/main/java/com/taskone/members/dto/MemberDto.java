@@ -14,4 +14,7 @@ public class MemberDto {
 	
 	@JsonProperty("mobile_no")
 	private String mobileNo;
+	
+	@JsonProperty("book_borrowed")
+	private Long borrowedBook;
 }

@@ -18,8 +18,11 @@ public class Borrow {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "borrow_id")
 	private Long borrowId;
+	
 	private String borrowingDate;
+	
 	private String returnDate;
+	
 	private Long returnCharge;
 	
 	@ManyToOne
